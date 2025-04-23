@@ -12,52 +12,56 @@ WEBHOOK = 'https://chat.googleapis.com/v1/spaces/AAQA2PdKSHc/messages?key=AIzaSy
 def lambda_handler(event, context):
     cloudwatch = boto3.client('cloudwatch', region_name=REGION)
     ec2 = boto3.client('ec2', region_name=REGION)
+    
+    # ดึงข้อมูล CPU ปัจจุบัน (ย้อนหลัง 3 นาที)
+    current_cpu = get_cpu_data(cloudwatch, minutes=3, period=60)
+    
+    # ดึงข้อมูล CPU เฉลี่ยย้อนหลัง 10 นาที
+    avg_cpu = get_cpu_data(cloudwatch, minutes=10, period=300)
+    
+    # ดึงข้อมูล instance
+    instance = ec2.describe_instances(InstanceIds=[INSTANCE_ID])['Reservations'][0]['Instances'][0]
+    ip = instance.get('PublicIpAddress', 'ยังไม่มี IP')
+    name = next((t['Value'] for t in instance.get('Tags', []) if t['Key'] == 'Name'), 'ไม่ระบุชื่อ')
+    
+    # สร้างข้อความ
+    timestamp = datetime.now(ZoneInfo("Asia/Bangkok")).strftime("%d-%m-%Y %H:%M:%S")
+    msg = (
+        f"Alarm CPUUtilization Over 80%\n"
+        f"Date: {timestamp}\n"
+        f"Hostname: {name}\n"
+        f"IP: {ip}\n"
+        f"Current CPU: {current_cpu:.2f}%\n"
+        f"AVG CPU (10 min): {avg_cpu:.2f}%\n"
+    )
+    
+    # ส่งข้อความ
+    send_to_webhook(msg)
+    
+    return {"status": "ok", "current_cpu": current_cpu, "avg_cpu": avg_cpu}
 
-    # เวลาย้อนหลัง 10 นาที
+def get_cpu_data(cloudwatch, minutes=5, period=300):
+    """ดึงข้อมูล CPU จาก CloudWatch"""
     end_time = datetime.utcnow()
-    start_time = end_time - timedelta(minutes=10)
-
-    # ดึงข้อมูล CPU จาก CloudWatch
+    start_time = end_time - timedelta(minutes=minutes)
+    
     response = cloudwatch.get_metric_statistics(
         Namespace='AWS/EC2',
         MetricName='CPUUtilization',
         Dimensions=[{'Name': 'InstanceId', 'Value': INSTANCE_ID}],
         StartTime=start_time,
         EndTime=end_time,
-        Period=300,
+        Period=period,
         Statistics=['Average'],
         Unit='Percent'
     )
-
+    
     datapoints = response.get('Datapoints', [])
     if not datapoints:
-        msg = f'⚠️ ไม่พบข้อมูล CPU ของ Instance {INSTANCE_ID} ในช่วง 10 นาทีที่ผ่านมา'
-        send_to_webhook(msg)
-        return {"status": "no_data"}
-
-    # ดึงค่าเฉลี่ยล่าสุด
+        return 0
+    
     latest = sorted(datapoints, key=lambda x: x['Timestamp'])[-1]
-    avg_cpu = latest['Average']
-    timestamp = datetime.now(ZoneInfo("Asia/Bangkok")).strftime("%d-%m-%Y %H:%M:%S")
-
-    # ดึงข้อมูล instance
-    instance = ec2.describe_instances(InstanceIds=[INSTANCE_ID])['Reservations'][0]['Instances'][0]
-    ip = instance.get('PublicIpAddress', 'ยังไม่มี IP')
-    name = next((t['Value'] for t in instance.get('Tags', []) if t['Key'] == 'Name'), 'ไม่ระบุชื่อ')
-
-    msg = (
-        f"Alarm CPUUtilization Over 80%\n"
-        f"Hostname: {name}\n"
-        f"Instance ID: {INSTANCE_ID}\n"
-        f"IP: {ip}\n"
-        f"AVG CPU: {avg_cpu:.2f}%\n"
-        f"Time: {timestamp}"
-    )
-
-    send_to_webhook(msg)
-
-    return {"status": "reported", "cpu": avg_cpu, "ip": ip}
-
+    return latest['Average']
 
 def send_to_webhook(message):
     req = urllib.request.Request(
