@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ค่าที่ตั้งไว้
-THRESHOLD=1
+THRESHOLD=80
 HOSTNAME=$(hostname)
 DATETIME=$(date '+%Y-%m-%d %H:%M:%S')
 WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQA2PdKSHc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=xZQeV8-BABJJYCvEk-Zcchzr68FCrZQuMJjsnmC_AoA"
