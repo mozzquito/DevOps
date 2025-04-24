@@ -18,6 +18,5 @@ if (( $(echo "$CPU_USAGE > $THRESHOLD" | bc -l) )); then
    TEXT="Alarm CPUUtilization Over 80%\nServer:zoo-database-optimize\nDate: $TIME\nHostname
 : $INSTANCE_NAME\nIP: $IP\nCurrent CPU: ${CPU_USAGE}%\nAVG CPU (10 min): ${AVG_CPU}%"
         
-   curl -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$TEXT\"}" "$WEBHOOK_UR
-L"
+   curl -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$TEXT\"}" "$WEBHOOK_URL"
 fi
