@@ -6,8 +6,9 @@ WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQA101hBdE/messages?key=AIza
 
 INSTANCE_NAME=$(hostname)
 TIME=$(date '+%d-%m-%Y %H:%M:%S')
+PRIVATE_IP=$(hostname -I | awk '{print $1}')
 PUBLIC_IP=$(curl -s ifconfig.me)
-PRIVATE_IP=${hostname -I | awk '{print $1}')
+PUBLIC_IP_ADD=$(curl -s http://checkip.amazonaws.com)
 
 CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')
 AVG_CPU=$(top -bn2 -d 0.5 | grep "Cpu(s)" | tail -n 1 | awk '{print 100 - $8}')
