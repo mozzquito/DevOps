@@ -3,7 +3,7 @@
 # ค่าที่ตั้งไว้
 THRESHOLD=80
 HOSTNAME=$(hostname)
-DATETIME=$(date '+%Y-%m-%d %H:%M:%S')
+DATETIME=$(date '+%d-%m-%Y %H:%M:%S')
 WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQA101hBdE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=ynjaZw9nWJj2EJx6AWI84Rmx3svNwhD-dnsfk5NFVVw"
 
 # ฟังก์ชันส่งข้อความไปยัง Google Chat
