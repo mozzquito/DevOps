@@ -8,10 +8,12 @@ def lambda_handler(event, context):
     instance_id = event.get('detail', {}).get('instance-id', 'Unknown')
     region = event.get('region', 'Unknown')
     time = event.get('time', 'Unknown')
+    ip = instance.get('PublicIpAddress', 'ยังไม่มี IP')
 
     message = (
 f"""Instance Status Fail
 Instance ID: `{instance_id}`
+IPv4: '{ip}'
 Time: `{time}`"""
     )
 
