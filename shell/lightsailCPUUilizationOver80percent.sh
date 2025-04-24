@@ -6,7 +6,8 @@ WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQA101hBdE/messages?key=AIza
 
 INSTANCE_NAME=$(hostname)
 TIME=$(date '+%d-%m-%Y %H:%M:%S')
-IP=$(curl -s ifconfig.me)
+PUBLIC_IP=$(curl -s ifconfig.me)
+PRIVATE_IP=${hostname -I | awk '{print $1}')
 
 CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')
 AVG_CPU=$(top -bn2 -d 0.5 | grep "Cpu(s)" | tail -n 1 | awk '{print 100 - $8}')
@@ -15,7 +16,7 @@ THRESHOLD=80
 
 if (( $(echo "$CPU_USAGE > $THRESHOLD" | bc -l) )); then
 
-   TEXT="Alarm CPUUtilization Over 80%\nServer:zoo-database-optimize\nDate: $TIME\nHostname: $INSTANCE_NAME\nIP: $IP\nCurrent CPU: ${CPU_USAGE}%\nAVG CPU (10 min): ${AVG_CPU}%"
+   TEXT="Alarm CPUUtilization Over 80%\nServer:zoo-database-optimize\nDate: $TIME\nHostname: $INSTANCE_NAME\nIP: $PUBLIC_IP\nCurrent CPU: ${CPU_USAGE}%\nAVG CPU (10 min): ${AVG_CPU}%"
         
    curl -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$TEXT\"}" "$WEBHOOK_URL"
 fi
