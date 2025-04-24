@@ -5,6 +5,8 @@ THRESHOLD=80
 HOSTNAME=$(hostname)
 DATETIME=$(TZ='Asia/Bangkok' date '+%d-%m-%Y %H:%M:%S')
 WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQA101hBdE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=ynjaZw9nWJj2EJx6AWI84Rmx3svNwhD-dnsfk5NFVVw"
+PRIVATE_IP=$(hostname -I | awk '{print $1}')
+PUBLIC_IP=$(curl -s ifconfig.me)
 
 # ฟังก์ชันส่งข้อความไปยัง Google Chat
 send_gchat_message() {
@@ -24,6 +26,7 @@ df -hP | grep -vE '^Filesystem|tmpfs|udev' | while read -r line; do
 MESSAGE="*Alert Disk Storage Over 80%*
 *Time:* $DATETIME
 *Host:* $HOSTNAME
+*IPv4:* $PUBLIC_IP
 *Partition:* $PARTITION
 *Storage:* $USED / $TOTAL (${USAGE}%)"
     send_gchat_message "$MESSAGE"
