@@ -1,21 +1,18 @@
 #!/bin/bash
 
-THRESHOLD=1
-HOSTNAME=$(hostname)
-DATETIME=$(TZ='Asia/Bangkok' date '+%d-%m-%Y %H:%M:%S')
 WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQAolAlBVg/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=fPohB6wPu5BlnRVpEM81Nx4MdBDXSE3DWGqYF6K7m8g"
+
+INSTANCE_NAME=$(hostname)
+TIME=$(TZ='Asia/Bangkok' date '+%d-%m-%Y %H:%M:%S')
+PRIVATE_IP=$(hostname -I | awk '{print $1}')
 PUBLIC_IP=$(wget -qO- http://checkip.amazonaws.com)
 
+CPU_IDLE=$(top -bn1 | grep "Cpu(s)" | awk -F'id,' -v prefix="$prefix" '{split($1, vs, ","); v=vs[length(vs)]; sub("%", "", v); printf("%.0f\n", v)}')
+CPU_USAGE=$((100 - CPU_IDLE))
 
-send_gchat_message() {
-  local message="$1"
-  curl -s -X POST -H 'Content-Type: application/json' \
-    -d "{\"text\": \"$message\"}" \
-    "$WEBHOOK_URL" >/dev/null
-}
+THRESHOLD=80
 
-
-df -P | awk -v threshold="$THRESHOLD" 'NR>1 {gsub("%","",$5); if ($5 >= threshold) printf "%s %.1fMB %.1fMB %d\n", $6, $3/1024, $2/1024, $5}' | while read -r PARTITION USED TOTAL USAGE; do
-    MESSAGE="*Disk Alert*\nTime: $DATETIME\nHostname: zoo-database-optimize \n IP: $PUBLIC_IP\n Partition: $PARTITION\nStorage: $USED / $TOTAL (${USAGE}%)"
-  send_gchat_message "$MESSAGE"
-done
+if [ "$CPU_USAGE" -gt "$THRESHOLD" ]; then
+    TEXT="Alarm CPUUtilization \nTime: $TIME\n Hostname: zoo-database-optimize \n IP: $PUBLIC_IP \n CPU: ${CPU_USAGE}%\n"
+    curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$TEXT\"}" "$WEBHOOK_URL" >/dev/null
+fi
