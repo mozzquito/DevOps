@@ -17,7 +17,7 @@ send_gchat_message() {
 }
 
 # ตรวจสอบพื้นที่ดิสก์
-df -P | awk -v threshold="$THRESHOLD" 'NR>1 {gsub("%","",$5); if ($5 >= threshold) print $6, $3, $2, $5}'
+df -P | awk -v threshold="$THRESHOLD" 'NR>1 {gsub("%","",$5); if ($5 >= threshold) print $6, $3, $2, $5}' | while read -r PARTITION USED TOTAL USAGE; do
   MESSAGE="*Disk Alert*\nTime: $DATETIME\nHost: $HOSTNAME\nIP: $PUBLIC_IP\nPartition: $PARTITION\nStorage: $USED / $TOTAL (${USAGE}%)"
   send_gchat_message "$MESSAGE"
 done
