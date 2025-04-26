@@ -13,6 +13,6 @@ CPU_USAGE=$((100 - CPU_IDLE))
 THRESHOLD=80
 
 if [ "$CPU_USAGE" -gt "$THRESHOLD" ]; then
-    TEXT="Alarm CPUUtilization \nTime: $TIME\n Hostname: zoo-database-optimize \n IP: $PUBLIC_IP \n CPU: ${CPU_USAGE}%\n"
+    TEXT="Alarm CPUUtilization \nTime: $TIME\nHostname: zoo-database-optimize \nIP: $PUBLIC_IP \nCPU: ${CPU_USAGE}%\n"
     curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$TEXT\"}" "$WEBHOOK_URL" >/dev/null
 fi
