@@ -3,7 +3,7 @@
 WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQA101hBdE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=ynjaZw9nWJj2EJx6AWI84Rmx3svNwhD-dnsfk5NFVVw"
 
 INSTANCE_NAME=$(hostname)
-TIME=$(date '+%d-%m-%Y %H:%M:%S')
+TIME=$(TZ ='Asia\Bangkok' date '+%d-%m-%Y %H:%M:%S')
 PRIVATE_IP=$(hostname -I | awk '{print $1}')
 PUBLIC_IP=$(wget -qO- http://checkip.amazonaws.com)
 
@@ -13,6 +13,6 @@ CPU_USAGE=$((100 - CPU_IDLE))
 THRESHOLD=80
 
 if [ "$CPU_USAGE" -gt "$THRESHOLD" ]; then
-    TEXT="🚨 CPU >80% | $INSTANCE_NAME ($PUBLIC_IP)\nTime: $TIME\nCPU: ${CPU_USAGE}%"
+    TEXT="Alarm CPUUtilization \nTime: $TIME\n Hostname$INSTANCE_NAME ($PUBLIC_IP)\n\nCPU: ${CPU_USAGE}%\n"
     curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$TEXT\"}" "$WEBHOOK_URL" >/dev/null
 fi
