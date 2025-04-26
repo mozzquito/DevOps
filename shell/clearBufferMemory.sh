@@ -5,7 +5,7 @@ HOSTNAME=$(hostname)
 DATETIME=$(TZ='Asia/Bangkok' date '+%d-%m-%Y %H:%M:%S')
 
 # อ่าน Memory Info ใช้แค่ awk ไม่ใช้ grep
-MEM_INFO=$(awk '/^Mem:/ {print "Total: "$2" | Used: "$3" | Free: "$4" | Shared: "$5" | Buff/Cache: "$6" | Available: "$7}' /proc/meminfo)
+MEM_INFO=$(free -h | grep ^Mem: | awk '{print "Total: "$2" | Used: "$3" | Free: "$4" | Shared: "$5" | Buff/Cache: "$6" | Available: "$7}')
 
 # อ่าน Buffer Memory ใช้ awk ตรง ๆ
 get_buffer_memory() {
@@ -28,6 +28,6 @@ echo 3 > /proc/sys/vm/drop_caches
 BUFFER_AFTER=$(get_buffer_memory)
 
 # เตรียมข้อความ
-MESSAGE="*Buffer Memory Clear*\nTime: $DATETIME\nHost: $HOSTNAME\nBefore Clear: ${BUFFER_BEFORE}MB\nAfter Clear: ${BUFFER_AFTER}MB\n\n$MEM_INFO"
+MESSAGE="*Buffer Memory Clear*\nTime: $DATETIME\nHost: $HOSTNAME\n\n $MEM_INFO"
 
 send_gchat_message "$MESSAGE"
