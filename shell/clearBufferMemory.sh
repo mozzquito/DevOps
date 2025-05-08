@@ -25,7 +25,7 @@ BUFFER_BEFORE=$(get_buffer_memory)
 
 # เคลียร์ memory
 sync
-echo 3 > /proc/sys/vm/drop_caches
+sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'
 
 BUFFER_AFTER=$(get_buffer_memory)
 
