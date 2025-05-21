@@ -1,4 +1,3 @@
-  GNU nano 7.2                                                                     docker-clean.sh                                                                               
 #!/bin/bash
 HOSTNAME=$"bam-stack-test"
 DATETIME=$(TZ='Asia/Bangkok' date '+%d-%m-%Y %H:%M:%S')
