@@ -5,7 +5,7 @@ BACKUP_DIR="/home/itadmin/arda-cads-infra/dmc/Backup_postgres_data"
 TODAY=$(date +"%d_%m_%Y")
 FILE_PATTERN="backup_postgres_data_$TODAY.tar.gz"
 
-REMOTE_USER="itadmin"
+REMOTE_USER="xxxxx"
 REMOTE_IP="xx.xx.xx.xx"
 REMOTE_DIR="/home/itadmin/arda-database-backup/postgres_data"
 
