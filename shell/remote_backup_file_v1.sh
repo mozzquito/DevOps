@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REMOTE_USER="itadmin"
-REMOTE_IP="10.0.2.106"
+REMOTE_USER="administrator"
+REMOTE_IP="xx.xx.xx.xx"
 TODAY=$(date +"%d_%m_%Y")
 
 WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQA101hBdE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=ynjaZw9nWJj2EJx6AWI84Rmx3svNwhD-dnsfk5NFVVw"
