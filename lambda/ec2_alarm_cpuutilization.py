@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 # ตั้งค่า
 INSTANCE_ID = 'i-01fe12fd56c1de558'
 REGION = 'ap-southeast-1'
-WEBHOOK = 'https://chat.googleapis.com/v1/spaces/AAQA2PdKSHc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=xZQeV8-BABJJYCvEk-Zcchzr68FCrZQuMJjsnmC_AoA'
+WEBHOOK = ''
 
 def lambda_handler(event, context):
     cloudwatch = boto3.client('cloudwatch', region_name=REGION)
